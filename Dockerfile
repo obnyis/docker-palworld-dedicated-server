@@ -101,6 +101,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     WEBHOOK_UPDATE_TITLE="Updating server" \
     WEBHOOK_UPDATE_DESCRIPTION="Server is being updated" \
     WEBHOOK_UPDATE_COLOR="2849520" \
+    # UE4SS-setting
+    ENABLE_UE4SS=false \
     # Config-setting - Warning: Every setting below here will be affected!
     SERVER_SETTINGS_MODE=manual \
     # Gameserver-start-settings
@@ -208,7 +210,7 @@ COPY --from=rconclibuilder /build/gorcon /usr/local/bin/rcon
 COPY --from=supercronicverify /usr/local/bin/supercronic /usr/local/bin/supercronic
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends --no-install-suggests procps xdg-user-dirs \
+    && apt-get install -y --no-install-recommends --no-install-suggests procps xdg-user-dirs patch unzip \
     && apt-get autoremove -y --purge \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -216,6 +218,7 @@ RUN apt-get update \
 COPY --chmod=755 entrypoint.sh /
 COPY --chmod=755 scripts/ /scripts
 COPY --chmod=755 includes/ /includes
+COPY --chmod=644 patches/ /patches
 COPY --chmod=644 configs/rcon.yaml /home/steam/steamcmd/rcon.yaml
 COPY --chmod=644 configs/PalWorldSettings.ini.template /
 COPY --chmod=755 gosu-amd64 /usr/local/bin/gosu
