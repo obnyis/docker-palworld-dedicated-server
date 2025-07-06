@@ -3,6 +3,7 @@
 source /includes/colors.sh
 source /includes/restapi.sh
 source /includes/webhook.sh
+source /includes/ue4ss.sh
 
 function check_and_run_custom_script() {
     if [[ -z $CUSTOM_SCRIPT_ENABLED ]] || [[ "${CUSTOM_SCRIPT_ENABLED,,}" != "true" ]]; then
@@ -53,6 +54,9 @@ function check_and_run_custom_script() {
 function start_server() {
     cd "$GAME_ROOT" || exit
     setup_configs
+    setup_ue4ss
+    local valid_ue4ss=$?
+
     ei ">>> Preparing to start the gameserver"
     START_OPTIONS=()
     if [[ -n $COMMUNITY_SERVER ]] && [[ "${COMMUNITY_SERVER,,}" == "true" ]]; then
@@ -69,7 +73,11 @@ function start_server() {
     check_and_run_custom_script
 
     es ">>> Starting the gameserver"
-    ./PalServer.sh "${START_OPTIONS[@]}"
+    if [[ $valid_ue4ss -eq 0 ]]; then
+        ./PalServerUE4SS.sh "${START_OPTIONS[@]}"
+    else
+        ./PalServer.sh "${START_OPTIONS[@]}"
+    fi
 }
 
 function stop_server() {
