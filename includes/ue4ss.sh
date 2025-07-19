@@ -52,6 +52,7 @@ function extract_and_patch_ue4ss() {
 }
 
 function setup_ue4ss() {
+    local -n ret="$1"
     if [[ -n $ENABLE_UE4SS ]] && [[ $ENABLE_UE4SS == "true" ]]; then
         if [ ! -f "./PalServerUE4SS.sh" ]; then
             ei ">>> Installing UE4SS and setting up LD_PRELOAD"
@@ -67,9 +68,12 @@ function setup_ue4ss() {
                 sed -i 's|^\("$UE_PROJECT_ROOT/Pal/Binaries/Linux/PalServer-Linux-Shipping" Pal "$@"\)|LD_PRELOAD='"${ue4ss_root}"'/libUE4SS.so \1|' ./PalServerUE4SS.sh
             else
                 ee "> Failed to install UE4SS, server will run without modding support"
-                return 1
+                ret=1
+                return
             fi
         fi
+        ret=0
+    else
+        ret=1
     fi
-    return 0
 }
