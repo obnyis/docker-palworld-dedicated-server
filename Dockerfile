@@ -235,7 +235,7 @@ RUN apt-get update \
 COPY --chmod=755 entrypoint.sh /
 COPY --chmod=755 scripts/ /scripts
 COPY --chmod=755 includes/ /includes
-COPY --chmod=644 patches/ /patches
+COPY --chmod=755 patches/ /patches
 COPY --chmod=644 configs/PalWorldSettings.ini.template /
 
 RUN mkdir -p "$BACKUP_PATH" \
