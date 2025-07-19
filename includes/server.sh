@@ -8,8 +8,8 @@ source /includes/ue4ss.sh
 function start_server() {
     cd "$GAME_ROOT" || exit
     setup_configs
-    setup_ue4ss
-    local valid_ue4ss=$?
+
+    setup_ue4ss is_valid_ue4ss
 
     ei ">>> Preparing to start the gameserver"
     START_OPTIONS=()
@@ -24,10 +24,11 @@ function start_server() {
     if [[ -n $WEBHOOK_ENABLED ]] && [[ $WEBHOOK_ENABLED == "true" ]]; then
         send_start_notification
     fi
-    es ">>> Starting the gameserver"
-    if [[ $valid_ue4ss -eq 0 ]]; then
+    if [[ $is_valid_ue4ss -eq 0 ]]; then
+        es ">>> Starting the gameserver with ue4ss"
         ./PalServerUE4SS.sh "${START_OPTIONS[@]}"
     else
+        es ">>> Starting the gameserver"
         ./PalServer.sh "${START_OPTIONS[@]}"
     fi
 }
