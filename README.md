@@ -1,18 +1,22 @@
-# Docker - Palworld Dedicated Server
+# Docker - Palworld Dedicated Server with UE4SS
 
-[![Build-Status master](https://github.com/jammsen/docker-palworld-dedicated-server/actions/workflows/docker-build-and-push-prod.yml/badge.svg)](https://github.com/jammsen/docker-palworld-dedicated-server/actions/workflows/docker-build-and-push-prod.yml)
-[![Build-Status develop](https://github.com/jammsen/docker-palworld-dedicated-server/actions/workflows/docker-build-and-push-develop.yml/badge.svg)](https://github.com/jammsen/docker-palworld-dedicated-server/actions/workflows/docker-build-and-push-develop.yml)
-![Docker Pulls](https://img.shields.io/docker/pulls/jammsen/palworld-dedicated-server)
-![Docker Stars](https://img.shields.io/docker/stars/jammsen/palworld-dedicated-server)
-![Image Size](https://img.shields.io/docker/image-size/jammsen/palworld-dedicated-server/latest)
+[![Build-Status master](https://github.com/obnyis/docker-palworld-dedicated-server/actions/workflows/docker-build-and-push-prod.yml/badge.svg)](https://github.com/obnyis/docker-palworld-dedicated-server/actions/workflows/docker-build-and-push-prod.yml)
+[![Build-Status develop](https://github.com/obnyis/docker-palworld-dedicated-server/actions/workflows/docker-build-and-push-develop.yml/badge.svg)](https://github.com/obnyis/docker-palworld-dedicated-server/actions/workflows/docker-build-and-push-develop.yml)
+![Docker Pulls](https://img.shields.io/docker/pulls/obnyis/palworld-dedicated-server)
+![Docker Stars](https://img.shields.io/docker/stars/obnyis/palworld-dedicated-server)
+![Image Size](https://img.shields.io/docker/image-size/obnyis/palworld-dedicated-server/latest)
 [![Discord](https://img.shields.io/discord/532141442731212810?logo=discord&label=Discord&link=https%3A%2F%2Fdiscord.gg%2F7tacb9Q6tj)](https://discord.gg/7tacb9Q6tj)
 
 > [!TIP]
 > Do you want to chat with the community?
 >
 > **[Join us on Discord](https://discord.gg/7tacb9Q6tj)**
+>
+> Mention `@obnyis` for UE4SS questions.
 
-This Docker image includes a Palworld Dedicated Server based on Linux and Docker.
+This Docker image includes a Palworld Dedicated Server based on Linux and Docker, along with the option to enable UE4SS.
+
+Modding support is provided by downloading the [linux-experiment](https://github.com/Yangff/RE-UE4SS/releases/tag/linux-experiment) build of UE4SS before the server starts, as documented in [UE4SS-RE/RE-UE4SS#364 (comment)](https://github.com/UE4SS-RE/RE-UE4SS/issues/364#issuecomment-2578762122)
 
 ___
 
@@ -50,8 +54,9 @@ If you need support for this Docker image:
 
 - Feel free to create a new issue.
   - You can reference other issues if you're experiencing a similar problem via #issue-number.
+  - DON'T open issues with this image on the [upstream repo](https://github.com/jammsen/docker-palworld-dedicated-server)
 - Follow the instructions and answer the questions of people who are willing to help you.
-- Once your issue is resolved, please close it and please consider giving this repo and the [Docker-Hub repository](https://hub.docker.com/repository/docker/jammsen/palworld-dedicated-server) a star.
+- Once your issue is resolved, please close it and please consider giving this repo and the [Docker-Hub repository](https://hub.docker.com/repository/docker/obnyis/palworld-dedicated-server) a star.
 - Please note that any issue that has been inactive for a week will be closed due to inactivity.
 
 Please avoid:
@@ -73,9 +78,14 @@ To run this Docker image, you need a basic understanding of Docker, Docker-Compo
 
 ## Changelog
 
-You can find the [changelog here](CHANGELOG.md)
+You can find the [base image changelog here](https://github.com/jammsen/docker-palworld-dedicated-server/blob/develop/CHANGELOG.md)
+
+You can find the [ue4ss specific changelog here](CHANGELOG-UE4SS.md)
 
 ## Credits / Shoutout / Contributions
+
+For the original image, which this has been forked from, much thanks to jammsen. If you make use of my fork please consider giving his repo and Docker image also a star ⭐
+- [@jammsen](https://github.com/jammsen) - [https://github.com/jammsen/docker-palworld-dedicated-server](https://github.com/jammsen/docker-palworld-dedicated-server) - [https://hub.docker.com/r/jammsen/palworld-dedicated-server](https://hub.docker.com/r/jammsen/palworld-dedicated-server)
 
 This 2 persons helped a lot along to way and made me and this project better! So if you do not like my version of the Docker image or looking for other features, feel free to check out the following 2 images:
 - [@thejcpalma](https://github.com/thejcpalma) - [https://github.com/thejcpalma/palworld-dedicated-server-docker](https://github.com/thejcpalma/palworld-dedicated-server-docker) - [https://hub.docker.com/r/thejcpalma/palworld-dedicated-server](https://hub.docker.com/r/thejcpalma/palworld-dedicated-server) - ❤️🫡
@@ -88,13 +98,19 @@ This 2 persons helped a lot along to way and made me and this project better! So
    - This directory will be used to store the game server files, including configs and savegames
    - In older versions we asked you to setup permissions via CHMOD or CHOWN, this should not be needed anymore!
 2. Set up Port-Forwarding or NAT for the ports in the Docker-Compose file
-3. Pull the latest version of the image with `docker pull jammsen/palworld-dedicated-server:latest`
+3. Pull the latest version of the image with `docker pull obnyis/palworld-dedicated-server:latest`
 4. Download the [docker-compose.yml](docker-compose.yml) and [default.env](default.env)
 5. Set up the `docker-compose.yml` and `default.env` to your liking
    - Make sure you setup PUID and PGID according to the user you want to use
      - **PUID and PGID 0 will error out, thats on purpose!**
      - if you use Docker as root, then you can just use 1000 inside the container
    - Refer to the [Environment-Variables](#environment-variables) section for more information
+6. Enaable modding support (this is disabled by default)
+   - Set `ENABLE_UE4SS` to `true` in the `default.env` file
+   - Extract mods under the `game` sub-directory in your game-server-directory
+     - Blueprint mods go in `game/Pal/Binaries/Linux/ue4ss`
+     - Pak mods go in `game/Pal/Content/Paks`
+     - Mods that contain a `.dll` are unsupported
 6. Start the container via `docker-compose up -d && docker-compose logs -f`
    - Watch the log, if no errors occur you can close the logs with ctrl+c
 7. Now have fun and happy gaming! 🎮😉
