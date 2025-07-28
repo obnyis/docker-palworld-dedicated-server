@@ -3,10 +3,10 @@ name: "run-unittests-on-build"
 description: "Runs unit tests on Docker image build"
 
 inputs:
-  image_tag:
+  docker_image:
     required: true
     type: string
-    description: "Tag of the image"
+    description: "Tag and label of the image"
   timeout_seconds:
     required: true
     type: integer
@@ -42,7 +42,8 @@ runs:
         -v ./game:/palworld/ \
         --restart unless-stopped \
         --stop-timeout 30 \
-        jammsen/palworld-dedicated-server:${{ inputs.image_tag }}
+        --pull=never \
+        ${{ inputs.docker_image }}
 
     - name: Wait for server to start
       shell: bash
