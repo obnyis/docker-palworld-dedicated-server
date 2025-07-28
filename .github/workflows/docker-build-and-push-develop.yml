@@ -46,7 +46,7 @@ jobs:
       - name: Run unit tests
         uses: ./.github/actions/unittest-on-build
         with:
-          image_tag: develop
+          docker_tag: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
           timeout_seconds: ${{ vars.TIMEOUT_SECONDS }}
 
       - name: Login to Docker Hub
