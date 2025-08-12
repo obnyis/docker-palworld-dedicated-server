@@ -37,6 +37,13 @@ rcon_showplayers_with_retry() {
                 if [[ -n $RCON_PLAYER_DEBUG ]] && [[ $RCON_PLAYER_DEBUG == "true" ]]; then
                     ew "Debug: current_players = ${current_players[*]}"
                 fi
+            elif [[ -n "$command_output" && "$(echo "$command_output" | wc -l)" -eq 1 ]]; then
+                # If there is exactly 1 line of output containing the header,
+                # we reset current_players to empty
+                current_players=()
+                if [[ -n $RCON_PLAYER_DEBUG ]] && [[ $RCON_PLAYER_DEBUG == "true" ]]; then
+                    ew "Debug: No players on server."
+                fi
             else
                 # If there is no error exit code but data is missing at least 1 line, something is off
                 # therefore we shouldnt set current_players to empty?
@@ -66,7 +73,7 @@ compare_players() {
     if [[ -n $RCON_PLAYER_DEBUG ]] && [[ $RCON_PLAYER_DEBUG == "true" ]]; then
         ew "Debug: current_players = ${current_players[*]}"
     fi
-    if [[ ${#current_players[@]} -eq 0 ]]; then
+    if [[ ${#current_players[@]} -eq 0 ]] && [[ ${#old_players[@]} -eq 0 ]]; then
         e "No players currently on the server."
         return
     fi
