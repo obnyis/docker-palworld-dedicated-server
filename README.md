@@ -164,8 +164,12 @@ services:
         published: 8211 # Gamerserver port on your host
         protocol: udp
         mode: host
-      - target: 8212 # Gameserver REST API port inside of the container
-        published: 8212 # Gameserver REST API port on your host
+      - target: 8212 # Gameserver API port inside of the container
+        published: 8212 # Gameserver API port on your host
+        protocol: tcp
+        mode: host
+      - target: 25575 # RCON port inside of the container
+        published: 25575 # RCON port on your host
         protocol: tcp
         mode: host
     env_file:
